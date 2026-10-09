@@ -1,0 +1,89 @@
+name: OnePlus MT6833 Kernel & Driver Compilation
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release Tag (e.g. v1.0)"
+        required: true
+        default: "v1.0"
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 120
+    permissions:
+      contents: write
+    env:
+      MAKEFLAGS: -j2
+      MALLOC_TRIM_THRESHOLD_: 131072
+      MALLOC_MMAP_THRESHOLD_: 131072
+
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          submodules: recursive
+
+      - name: Configure Swap Space
+        run: |
+          sudo swapoff -a || true
+          sudo rm -f /swapfile || true
+          sudo fallocate -l 8G /mnt/swapfile || sudo dd if=/dev/zero of=/mnt/swapfile bs=1M count=8192
+          sudo chmod 600 /mnt/swapfile
+          sudo mkswap /mnt/swapfile
+          sudo swapon /mnt/swapfile
+          free -h
+
+      - name: Set up Build Environment
+        run: |
+          sudo apt update -y
+          sudo apt install -y libncurses5-dev bc bison flex make gcc g++ git python3 zip unzip libssl-dev cpio libelf-dev libyaml-dev pkg-config device-tree-compiler wget tar xz-utils binutils-aarch64-linux-gnu
+
+      - name: Download Toolchains
+        run: |
+          mkdir -p toolchain/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 toolchain/clang/host/linux-x86/clang-r383902
+          echo "[+] Fetching GCC 4.9 toolchain..."
+          git clone --depth=1 https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 toolchain/gcc/linux-x86/aarch64/aarch64-linux-android-4.9
+          echo "[+] Fetching official AOSP Clang-r383902..."
+          wget -q https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/android-11.0.0_r28/clang-r383902.tar.gz
+          tar -xzf clang-r383902.tar.gz -C toolchain/clang/host/linux-x86/clang-r383902
+          rm -f clang-r383902.tar.gz
+
+      - name: Set Environment Variable
+        run: |
+          echo "BUILD_KERNEL_VERSION=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
+
+      - name: Compile Kernel and Drivers
+        run: |
+          ulimit -n 65536 || true
+          chmod +x build.sh build_external_module.sh
+          bash build.sh
+
+      - name: Upload Kernel Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kernel-OnePlus-MT6833-${{ github.event.inputs.tag }}
+          path: build/boot.img
+
+      - name: Upload Driver Module Artifacts (.ko & .sh)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Drivers-OnePlus-MT6833-${{ github.event.inputs.tag }}
+          path: |
+            build/modules/*.ko
+            build/modules/*.sh
+
+      - name: Create or Update Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.event.inputs.tag }}
+          name: "Kernel-OnePlus-MT6833-${{ github.event.inputs.tag }}"
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: "build/boot.img,build/modules/*.ko,build/modules/*.sh"
+          allowUpdates: true
+          replacesArtifacts: true
+          body: "Auto-compiled Kernel boot.img and MemKernel/RTDev driver modules for OnePlus Nord N30 SE 5G (CPH2553 / MT6833)"
