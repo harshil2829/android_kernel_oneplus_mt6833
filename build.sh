@@ -356,7 +356,7 @@ build_kernel() {
     export MALLOC_TRIM_THRESHOLD_=131072
     export MALLOC_MMAP_THRESHOLD_=131072
     ulimit -n 65536 || true
-    JOBS=2
+    JOBS=$(nproc 2>/dev/null || echo 4)
 
     # Compile Image and DTBs
     make -C "${RDIR}" O="${RDIR}/out" \
