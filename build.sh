@@ -342,10 +342,8 @@ build_kernel() {
     echo "  Building OnePlus Nord N30 SE 5G Kernel (MT6833)     "
     echo "======================================================"
     
-    # Pre-generate timeconst.h so bc never hangs on HZ calculation
-    mkdir -p "${RDIR}/include/generated" "${RDIR}/out/include/generated"
-    echo 250 | bc -q "${RDIR}/kernel/time/timeconst.bc" > "${RDIR}/include/generated/timeconst.h" 2>/dev/null || true
-    cp "${RDIR}/include/generated/timeconst.h" "${RDIR}/out/include/generated/timeconst.h" 2>/dev/null || true
+    # Ensure root source tree is clean of generated files so out-of-tree builds use out/include/generated
+    rm -rf "${RDIR}/include/generated" "${RDIR}/include/config"
 
     # Generate defconfig
     make -C "${RDIR}" O="${RDIR}/out" \
@@ -355,6 +353,9 @@ build_kernel() {
         CLANG_TRIPLE=aarch64-linux-gnu- \
         CROSS_COMPILE="${BUILD_CROSS_COMPILE}" \
         k6833v1_64_defconfig
+
+    mkdir -p "${RDIR}/out/include/generated"
+    echo 250 | bc -q "${RDIR}/kernel/time/timeconst.bc" > "${RDIR}/out/include/generated/timeconst.h" 2>/dev/null || true
 
     "${RDIR}/scripts/config" --file "${RDIR}/out/.config" -d IKHEADERS || true
     "${RDIR}/scripts/config" --file "${RDIR}/out/.config" -d LTO_CLANG || true
