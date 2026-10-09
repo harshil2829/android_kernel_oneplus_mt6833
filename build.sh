@@ -357,6 +357,8 @@ build_kernel() {
     mkdir -p "${RDIR}/out/include/generated"
     echo 250 | bc -q "${RDIR}/kernel/time/timeconst.bc" > "${RDIR}/out/include/generated/timeconst.h" 2>/dev/null || true
 
+    "${RDIR}/scripts/config" --file "${RDIR}/out/.config" -e ARM64 || true
+    "${RDIR}/scripts/config" --file "${RDIR}/out/.config" -e 64BIT || true
     "${RDIR}/scripts/config" --file "${RDIR}/out/.config" -d IKHEADERS || true
     "${RDIR}/scripts/config" --file "${RDIR}/out/.config" -d LTO_CLANG || true
     "${RDIR}/scripts/config" --file "${RDIR}/out/.config" -d CFI_CLANG || true
