@@ -94,5 +94,5 @@ source fs/proc/healthinfo/Kconfig
 #endif /*OPLUS_FEATURE_HEALTHINFO*/
 
 #ifdef OPLUS_FEATURE_TASK_CPUSTATS
-source "fs/proc/task_cpustats/Kconfig"
+# source "fs/proc/task_cpustats/Kconfig"
 #endif /* OPLUS_FEATURE_TASK_CPUSTATS */

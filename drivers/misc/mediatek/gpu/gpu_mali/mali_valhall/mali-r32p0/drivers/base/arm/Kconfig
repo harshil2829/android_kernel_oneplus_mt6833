@@ -28,9 +28,9 @@ menuconfig MALI_BASE_MODULES
 	  Those modules provide extra features or debug interfaces and,
 	  are optional for the use of the Mali GPU modules.
 
-source "drivers/base/arm/dma_buf_test_exporter/Kconfig"
-source "drivers/base/arm/memory_group_manager/Kconfig"
-source "drivers/base/arm/protected_memory_allocator/Kconfig"
+# source "drivers/base/arm/dma_buf_test_exporter/Kconfig"
+# source "drivers/base/arm/memory_group_manager/Kconfig"
+# source "drivers/base/arm/protected_memory_allocator/Kconfig"
 
 
 endmenu

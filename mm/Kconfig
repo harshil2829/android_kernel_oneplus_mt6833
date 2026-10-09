@@ -849,16 +849,16 @@ config PERCPU_STATS
 	  be used to help understand percpu memory usage.
 
 #ifdef OPLUS_FEATURE_MEMLEAK_DETECT
-source "mm/malloc_track/Kconfig.compat"
-source "mm/task_mem/Kconfig"
+# source "mm/malloc_track/Kconfig.compat"
+# source "mm/task_mem/Kconfig"
 #endif
 
 #ifdef OPLUS_FEATURE_MULTI_KSWAPD
-source "mm/multi_kswapd/Kconfig"
+# source "mm/multi_kswapd/Kconfig"
 #endif /*OPLUS_FEATURE_MULTI_KSWAPD*/
 
 #ifdef OPLUS_FEATURE_HEALTHINFO
-source "mm/healthinfo/Kconfig"
+# source "mm/healthinfo/Kconfig"
 #endif /*OPLUS_FEATURE_HEALTHINFO*/
 
 config MAPPED_PROTECT

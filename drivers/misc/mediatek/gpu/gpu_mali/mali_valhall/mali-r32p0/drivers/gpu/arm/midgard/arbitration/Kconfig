@@ -27,4 +27,4 @@ config MALI_ARBITRATION
 	  virtualization setup for Mali
 	  If unsure, say N.
 
-source "drivers/gpu/arm/midgard/arbitration/ptm/Kconfig"
+# source "drivers/gpu/arm/midgard/arbitration/ptm/Kconfig"

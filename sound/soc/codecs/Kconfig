@@ -1280,7 +1280,7 @@ config SND_SOC_RT5512
 	  be set to yes if device with RT5512 on it.
 
 #ifdef OPLUS_ARCH_EXTENDS
-source "sound/soc/codecs/audio/Kconfig"
+# source "sound/soc/codecs/audio/Kconfig"
 #endif /* OPLUS_ARCH_EXTENDS */
 
 #ifdef OPLUS_BUG_COMPATIBILITY

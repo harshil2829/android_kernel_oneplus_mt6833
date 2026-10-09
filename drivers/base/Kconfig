@@ -245,7 +245,7 @@ config SOC_BUS
 
 source "drivers/base/regmap/Kconfig"
 #ifdef OPLUS_FEATURE_TP_BASIC
-source "drivers/base/kernelFwUpdate/Kconfig"
+# source "drivers/base/kernelFwUpdate/Kconfig"
 #endif /*OPLUS_FEATURE_TP_BASIC*/
 
 config DMA_SHARED_BUFFER

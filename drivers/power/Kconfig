@@ -2,7 +2,7 @@ source "drivers/power/avs/Kconfig"
 source "drivers/power/reset/Kconfig"
 source "drivers/power/supply/Kconfig"
 
-source "drivers/power/oplus/Kconfig"
+# source "drivers/power/oplus/Kconfig"
 config OPLUS_HQ_CHARGER
 	bool "OPLUS_CHARGER"
 	default n
