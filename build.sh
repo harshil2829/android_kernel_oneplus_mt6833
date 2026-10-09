@@ -364,7 +364,7 @@ build_kernel() {
     "${RDIR}/scripts/config" --file "${RDIR}/out/.config" --set-val HZ 250 || true
     "${RDIR}/scripts/config" --file "${RDIR}/out/.config" -e HZ_250 || true
 
-    # Ensure config is non-interactive
+    # Ensure config is non-interactive and sync autoconf headers
     make -C "${RDIR}" O="${RDIR}/out" \
         CC="${BUILD_CC}" \
         LD="${BUILD_LD}" \
@@ -372,6 +372,14 @@ build_kernel() {
         CLANG_TRIPLE=aarch64-linux-gnu- \
         CROSS_COMPILE="${BUILD_CROSS_COMPILE}" \
         olddefconfig
+
+    make -C "${RDIR}" O="${RDIR}/out" \
+        CC="${BUILD_CC}" \
+        LD="${BUILD_LD}" \
+        ARCH=arm64 \
+        CLANG_TRIPLE=aarch64-linux-gnu- \
+        CROSS_COMPILE="${BUILD_CROSS_COMPILE}" \
+        prepare
 
     export MALLOC_TRIM_THRESHOLD_=131072
     export MALLOC_MMAP_THRESHOLD_=131072
