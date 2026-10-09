@@ -27,6 +27,7 @@
 #include <linux/jump_label.h>
 #include <linux/smp.h>
 #include <linux/types.h>
+#include <linux/percpu.h>
 
 #include <clocksource/arm_arch_timer.h>
 
