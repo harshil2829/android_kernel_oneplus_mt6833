@@ -13,9 +13,6 @@ extern const char linux_proc_banner[];
 
 #define PRINTK_MAX_SINGLE_HEADER_LEN 2
 
-extern char *log_buf_addr_get(void);
-extern u32 log_buf_len_get(void);
-
 #ifdef CONFIG_MTK_AEE_FEATURE
 extern void aee_wdt_zap_locks(void);
 #endif
@@ -182,6 +179,8 @@ static inline void printk_nmi_direct_exit(void) { }
 #endif /* PRINTK_NMI */
 
 #ifdef CONFIG_PRINTK
+extern char *log_buf_addr_get(void);
+extern u32 log_buf_len_get(void);
 asmlinkage __printf(5, 0)
 int vprintk_emit(int facility, int level,
 		 const char *dict, size_t dictlen,
