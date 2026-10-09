@@ -15,7 +15,7 @@ jobs:
     permissions:
       contents: write
     env:
-      MAKEFLAGS: -j2
+      MAKEFLAGS: -j4
       MALLOC_TRIM_THRESHOLD_: 131072
       MALLOC_MMAP_THRESHOLD_: 131072
 

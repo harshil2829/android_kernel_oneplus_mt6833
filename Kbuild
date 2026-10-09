@@ -33,10 +33,10 @@ targets += $(timeconst-file)
 
 quiet_cmd_gentimeconst = GEN     $@
 define cmd_gentimeconst
-	(echo $(CONFIG_HZ) | bc -q $< ) > $@
+	(echo $(if $(CONFIG_HZ),$(CONFIG_HZ),250) | bc -q $< ) > $@
 endef
 define filechk_gentimeconst
-	(echo $(CONFIG_HZ) | bc -q $< )
+	(echo $(if $(CONFIG_HZ),$(CONFIG_HZ),250) | bc -q $< )
 endef
 
 $(obj)/$(timeconst-file): kernel/time/timeconst.bc FORCE

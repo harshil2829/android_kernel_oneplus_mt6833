@@ -342,6 +342,11 @@ build_kernel() {
     echo "  Building OnePlus Nord N30 SE 5G Kernel (MT6833)     "
     echo "======================================================"
     
+    # Pre-generate timeconst.h so bc never hangs on HZ calculation
+    mkdir -p "${RDIR}/include/generated" "${RDIR}/out/include/generated"
+    echo 250 | bc -q "${RDIR}/kernel/time/timeconst.bc" > "${RDIR}/include/generated/timeconst.h" 2>/dev/null || true
+    cp "${RDIR}/include/generated/timeconst.h" "${RDIR}/out/include/generated/timeconst.h" 2>/dev/null || true
+
     # Generate defconfig
     make -C "${RDIR}" O="${RDIR}/out" \
         CC="${BUILD_CC}" \
@@ -352,6 +357,20 @@ build_kernel() {
         k6833v1_64_defconfig
 
     "${RDIR}/scripts/config" --file "${RDIR}/out/.config" -d IKHEADERS || true
+    "${RDIR}/scripts/config" --file "${RDIR}/out/.config" -d LTO_CLANG || true
+    "${RDIR}/scripts/config" --file "${RDIR}/out/.config" -d CFI_CLANG || true
+    "${RDIR}/scripts/config" --file "${RDIR}/out/.config" -e LTO_NONE || true
+    "${RDIR}/scripts/config" --file "${RDIR}/out/.config" --set-val HZ 250 || true
+    "${RDIR}/scripts/config" --file "${RDIR}/out/.config" -e HZ_250 || true
+
+    # Ensure config is non-interactive
+    make -C "${RDIR}" O="${RDIR}/out" \
+        CC="${BUILD_CC}" \
+        LD="${BUILD_LD}" \
+        ARCH=arm64 \
+        CLANG_TRIPLE=aarch64-linux-gnu- \
+        CROSS_COMPILE="${BUILD_CROSS_COMPILE}" \
+        olddefconfig
 
     export MALLOC_TRIM_THRESHOLD_=131072
     export MALLOC_MMAP_THRESHOLD_=131072
@@ -365,7 +384,7 @@ build_kernel() {
         ARCH=arm64 \
         CLANG_TRIPLE=aarch64-linux-gnu- \
         CROSS_COMPILE="${BUILD_CROSS_COMPILE}" \
-        -j"${JOBS}"
+        -j"${JOBS}" < /dev/null
     
     mkdir -p "${RDIR}/arch/arm64/boot"
     cp "${RDIR}/out/arch/arm64/boot/Image.gz" "${RDIR}/build/boot.img" 2>/dev/null || cp "${RDIR}/out/arch/arm64/boot/Image" "${RDIR}/build/boot.img" 2>/dev/null || true
