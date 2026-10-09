@@ -51,6 +51,10 @@
 
 #define PTRS_PER_PTE		(1 << (PAGE_SHIFT - 3))
 
+#ifndef CONFIG_PGTABLE_LEVELS
+#define CONFIG_PGTABLE_LEVELS 3
+#endif
+
 /*
  * PMD_SHIFT determines the size a level 2 page table entry can map.
  */

@@ -62,6 +62,9 @@
  * VA_BITS - the maximum number of bits for virtual addresses.
  * VA_START - the first kernel virtual address.
  */
+#ifndef CONFIG_ARM64_VA_BITS
+#define CONFIG_ARM64_VA_BITS 39
+#endif
 #define VA_BITS			(CONFIG_ARM64_VA_BITS)
 #define VA_START		(UL(0xffffffffffffffff) - \
 	(UL(1) << VA_BITS) + 1)
