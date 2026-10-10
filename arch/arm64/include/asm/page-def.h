@@ -23,6 +23,26 @@
 
 /* PAGE_SHIFT determines the page size */
 /* CONT_SHIFT determines the number of pages which can be tracked together  */
+#ifndef CONFIG_ARM64_PAGE_SHIFT
+#if defined(CONFIG_ARM64_64K_PAGES)
+#define CONFIG_ARM64_PAGE_SHIFT 16
+#elif defined(CONFIG_ARM64_16K_PAGES)
+#define CONFIG_ARM64_PAGE_SHIFT 14
+#else
+#define CONFIG_ARM64_PAGE_SHIFT 12
+#endif
+#endif
+
+#ifndef CONFIG_ARM64_CONT_SHIFT
+#if defined(CONFIG_ARM64_64K_PAGES)
+#define CONFIG_ARM64_CONT_SHIFT 5
+#elif defined(CONFIG_ARM64_16K_PAGES)
+#define CONFIG_ARM64_CONT_SHIFT 7
+#else
+#define CONFIG_ARM64_CONT_SHIFT 4
+#endif
+#endif
+
 #define PAGE_SHIFT		CONFIG_ARM64_PAGE_SHIFT
 #define CONT_SHIFT		CONFIG_ARM64_CONT_SHIFT
 #define PAGE_SIZE		(_AC(1, UL) << PAGE_SHIFT)
